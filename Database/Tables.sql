@@ -116,9 +116,6 @@ CREATE TABLE TutorCourse (
 );
 
 
-
-
-
 -- Table: Student
 CREATE TABLE Student (
     Student_ID INT AUTO_INCREMENT PRIMARY KEY,

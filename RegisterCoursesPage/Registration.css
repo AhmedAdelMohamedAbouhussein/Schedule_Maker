@@ -1,0 +1,163 @@
+body 
+{
+    background-color: #f0f4f8;
+    font-family: 'Segoe UI', sans-serif;
+    animation: fadeIn 1s ease-out;
+}
+
+header 
+{
+    background-color: #003366;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards 0.5s;
+}
+
+.selector 
+{
+    margin: 30px auto;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards 1s;
+}
+
+.hidden 
+{
+    display: none;
+}
+
+table 
+{
+    margin: 30px auto;
+    width: 90%;
+    max-width: 900px;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    animation: slideIn 0.5s ease-out forwards 1.5s;
+}
+
+th, td 
+{
+    border: 1px solid #ccc;
+    padding: 15px;
+    text-align: center;
+}
+
+th 
+{
+    background-color: #003366;
+    color: white;
+}
+
+td.subject 
+{
+    background-color: #e0f0ff;
+    font-weight: bold;
+}
+
+.btn-primary 
+{
+    width: fit-content;
+    align-self: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-primary:hover 
+{
+    transform: scale(1.1);
+    background-color: #005b99;
+}
+
+#confirmBtn
+{
+    margin-top: 20px;
+    display: none;
+    transform: scale(0);
+    animation: popIn 0.5s ease-out forwards 1s;
+}
+
+.alert 
+{
+    margin: 10px auto;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards 1s;
+}
+
+  /* Animation for elements */
+@keyframes fadeIn 
+{
+    from 
+    {
+        opacity: 0;
+    }
+    to 
+    {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn 
+{
+    from 
+    {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to 
+    {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn 
+{
+    from 
+    {
+        transform: scale(0);
+    }
+    to 
+    {
+        transform: scale(1);
+    }
+}
+
+@keyframes popIn 
+{
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes highlight 
+{
+    0% { background-color: #d1ffd1; }
+    100% { background-color: #e0f0ff; }
+}
+
+@keyframes shake 
+{
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.subject.pop-in 
+{
+    animation: popIn 0.3s ease, highlight 2s ease;
+}
+
+.shake 
+{
+    animation: shake 0.4s ease;
+}

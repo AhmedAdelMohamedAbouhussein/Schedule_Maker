@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AASTMT Smart Scheduler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="Registration.css" rel="stylesheet">
+  <title>Schedule Viewer</title>
+</head>
+<body>
+
+  <div class="selector container" id="selectionArea">
+    <select id="subjectSelect" class="form-select" onchange="populateLecturers()">
+      <option selected disabled>Select Subject</option>
+    </select>
+    
+    <select id="lecturerSelect" class="form-select hidden" onchange="populateLectureTimes()">
+      <option selected disabled>Select Lecturer</option>
+    </select>
+    
+    <select id="lectureTimeSelect" class="form-select hidden" onchange="populateTutors()">
+      <option selected disabled>Select Lecture Time</option>
+    </select>
+    
+    <select id="tutorSelect" class="form-select hidden" onchange="populateTutorTimes()">
+      <option selected disabled>Select Tutor</option>
+    </select>
+    
+    <select id="SectionTimeSelect" class="form-select hidden" onchange="document.getElementById('addSubjectBtn').disabled = false;">
+      <option selected disabled>Select Section Time</option>
+    </select>
+    
+
+    <button id="addSubjectBtn" class="btn btn-primary" onclick="addSubjectToSchedule()">Add Subject</button>
+  </div>
+
+  <div id="alertPlaceholder"></div>
+
+  <div id="tableContainer">
+    <table id="scheduleTable">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>08:00 - 10:00</th>
+          <th>10:00 - 12:00</th>
+          <th>12:00 - 14:00</th>
+          <th>14:00 - 16:00</th>
+          <th>16:00 - 18:00</th>
+        </tr>
+      </thead>
+      <tbody id="scheduleBody">
+        <tr><th>Saturday</th><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>Sunday</th><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>Monday</th><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>Tuesday</th><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>Wednesday</th><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>Thursday</th><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="text-center">
+    <button id="confirmBtn" class="btn btn-success" onclick="finalize()">Confirm Registration</button>
+  </div>
+
+  <script src="Registration.js"></script>
+</body>
+</html>

@@ -11,12 +11,4 @@ try {
 } catch (mysqli_sql_exception $e) {
     die("Connection failed: " . $e->getMessage());
 }
-
-// Confirm connection
-if ($conn) {
-    echo '<script> console.log("Connected successfully") </script>';
-} else {
-    echo '<script> console.log("Connection failed") </script>';
-    exit;
-}
 ?>

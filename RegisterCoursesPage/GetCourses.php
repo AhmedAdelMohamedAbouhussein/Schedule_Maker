@@ -1,52 +1,87 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start(); // Required to use $_SESSION
-include 'Connect_DataBase.php';
+include '../Connect_DataBase.php';
+
+// Ensure the content type is set *before* any output
+header('Content-Type: application/json');
 
 // Input: Student ID
+// For debugging, you might want to temporarily hardcode a student ID
+// $studentID = 1;
 $studentID = $_SESSION['ID']; // Or fetch from $_GET/$_POST
 
 // Step 1: Get the student's department
 $sql = "SELECT Department_Name FROM Department WHERE Department_ID = (SELECT Department_ID FROM Student WHERE Student_ID = ?)";
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    echo json_encode(['error' => 'Prepare statement failed (Department)']);
+    exit();
+}
 $stmt->bind_param("i", $studentID);
 $stmt->execute();
 $result = $stmt->get_result();
+if (!$result) {
+    echo json_encode(['error' => 'Get result failed (Department)']);
+    exit();
+}
 $departmentRow = $result->fetch_assoc();
+if (!$departmentRow) {
+    echo json_encode(['error' => 'Could not fetch department for student']);
+    exit();
+}
 $department = $departmentRow['Department_Name'];
+$stmt->close();
 
 // Step 2: Get all completed courses
 $sql = "SELECT Course_Code FROM CompletedCourses WHERE Student_ID = ?";
 $stmt = $conn->prepare($sql);
+if (!$stmt) {
+    echo json_encode(['error' => 'Prepare statement failed (CompletedCourses)']);
+    exit();
+}
 $stmt->bind_param("i", $studentID);
 $stmt->execute();
 $result = $stmt->get_result();
+if (!$result) {
+    echo json_encode(['error' => 'Get result failed (CompletedCourses)']);
+    exit();
+}
 
 $completedCourses = [];
 while ($row = $result->fetch_assoc()) {
     $completedCourses[] = $row['Course_Code'];
 }
+$stmt->close();
 
+$recommendedCourses = [];
 if (!empty($completedCourses)) {
     // Step 3: Get first 6 recommended courses where completed course is a prerequisite
     $placeholders = implode(',', array_fill(0, count($completedCourses), '?'));
-    $sql = "SELECT DISTINCT Course_Code FROM Prerequisite 
-            WHERE Prerequisite_Code IN ($placeholders) 
-            LIMIT 6";
+    $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
+                WHERE Prerequisite_Code IN ($placeholders)
+                LIMIT 6";
 
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare statement failed (Prerequisite)']);
+        exit();
+    }
     $stmt->bind_param(str_repeat("s", count($completedCourses)), ...$completedCourses);
     $stmt->execute();
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (Prerequisite)']);
+        exit();
+    }
 
-    $recommendedCourses = [];
     while ($row = $result->fetch_assoc()) {
         $recommendedCourses[] = $row['Course_Code'];
     }
-}
-else {
+    $stmt->close();
+} else {
     // Step 4: Assign courses based on the student's department
-    $recommendedCourses = [];
-
     if ($department == 'Computer Science') {
         // Assign courses from CS101 to CS106
         $recommendedCourses = ['CS101', 'CS102', 'CS103', 'CS104', 'CS105', 'CS106'];
@@ -63,7 +98,8 @@ else {
 }
 
 if (empty($recommendedCourses)) {
-    exit; // No recommended courses
+    echo json_encode(['lectureSchedules' => [], 'sectionSchedules' => []]);
+    exit(); // Ensure we still output JSON even if empty
 }
 
 // Arrays to store results
@@ -72,27 +108,43 @@ $sectionSchedules = [];
 
 // Step 5: Loop through recommended courses
 foreach ($recommendedCourses as $courseCode) {
-
     // Get Course Name
     $sql = "SELECT Name FROM Course WHERE Course_Code = ?";
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare statement failed (Course Name)']);
+        exit();
+    }
     $stmt->bind_param("s", $courseCode);
     $stmt->execute();
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (Course Name)']);
+        exit();
+    }
     $courseRow = $result->fetch_assoc();
     $courseName = $courseRow['Name'];
+    $stmt->close();
 
     // Get Lecturer info
     $sql = "SELECT L.Name AS LecturerName, LT.Day_of_Week, LT.Start_Time, LT.End_Time, LT.Room
-            FROM LecturerCourse LC
-            JOIN Lecturer L ON LC.Lecturer_ID = L.Lecturer_ID
-            JOIN LectureTime LT ON LC.Course_Lecture_ID = LT.Lecture_ID
-            WHERE LC.Course_Code = ?";
-    
+                FROM LecturerCourse LC
+                JOIN Lecturer L ON LC.Lecturer_ID = L.Lecturer_ID
+                JOIN LectureTime LT ON LC.Course_Lecture_ID = LT.Lecture_ID
+                WHERE LC.Course_Code = ?";
+
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare statement failed (Lecturer)']);
+        exit();
+    }
     $stmt->bind_param("s", $courseCode);
     $stmt->execute();
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (Lecturer)']);
+        exit();
+    }
 
     while ($row = $result->fetch_assoc()) {
         $lectureSchedules[] = [
@@ -105,18 +157,27 @@ foreach ($recommendedCourses as $courseCode) {
             'Room' => $row['Room']
         ];
     }
+    $stmt->close();
 
     // Get Tutor info
     $sql = "SELECT T.Name AS TutorName, ST.Day_of_Week, ST.Start_Time, ST.End_Time, ST.Room
-            FROM TutorCourse TC
-            JOIN Tutor T ON TC.Tutor_ID = T.Tutor_ID
-            JOIN SectionTime ST ON TC.Course_Section_ID = ST.Section_ID
-            WHERE TC.Course_Code = ?";
+                FROM TutorCourse TC
+                JOIN Tutor T ON TC.Tutor_ID = T.Tutor_ID
+                JOIN SectionTime ST ON TC.Course_Section_ID = ST.Section_ID
+                WHERE TC.Course_Code = ?";
 
     $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare statement failed (Tutor)']);
+        exit();
+    }
     $stmt->bind_param("s", $courseCode);
     $stmt->execute();
     $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (Tutor)']);
+        exit();
+    }
 
     while ($row = $result->fetch_assoc()) {
         $sectionSchedules[] = [
@@ -129,27 +190,9 @@ foreach ($recommendedCourses as $courseCode) {
             'Room' => $row['Room']
         ];
     }
+    $stmt->close();
 }
+
+echo json_encode(['lectureSchedules' => $lectureSchedules, 'sectionSchedules' => $sectionSchedules]);
+exit();
 ?>
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <script>
-    const lectureSchedules = <?php echo json_encode($lectureSchedules); ?>;
-    const sectionSchedules = <?php echo json_encode($sectionSchedules); ?>;
-
-    console.log("Lectures:", lectureSchedules);
-    console.log("Sections:", sectionSchedules);
-</script>
-</head>
-<body>
-    
-</body>
-</html>
