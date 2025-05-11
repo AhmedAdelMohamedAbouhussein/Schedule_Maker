@@ -142,14 +142,22 @@ CREATE TABLE CompletedCourses (
 );
 
 -- Table: Enroll
-CREATE TABLE Enroll (
+CREATE TABLE Enrollment (
     Student_ID INT,
     Course_Code VARCHAR(20),
     Enrollment_Date DATE NOT NULL,
     Grade VARCHAR(10),
+    LectureTime_ID INT NULL,
+    SectionTime_ID INT NULL,
     PRIMARY KEY (Student_ID, Course_Code),
     FOREIGN KEY (Student_ID) REFERENCES Student(Student_ID)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (Course_Code) REFERENCES Course(Course_Code)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (LectureTime_ID) REFERENCES LectureTime(LectureTime_ID)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (SectionTime_ID) REFERENCES SectionTime(SectionTime_ID)
+        ON DELETE SET NULL ON UPDATE CASCADE
 );
+
+--tecerflow

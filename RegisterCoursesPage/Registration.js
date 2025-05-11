@@ -1,27 +1,46 @@
 let lectureSchedulesData = {};
 let sectionSchedulesData = {};
+let StudentID;
 let addedSubjects = [];
 const maxSubjects = 6;
 
-fetch("GetCourses.php")
-    .then(response => {
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        return response.json();
-    })
-    .then(data => {
-        const { lectureSchedules, sectionSchedules } = data;
+const request = new Request("GetCourses.php", { method: "GET"});
+
+async function getCourses() {
+    try 
+    {
+        const response = await fetch(request);
+        if (!response.ok) 
+        {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const { lectureSchedules, sectionSchedules, studentID } = data;
+
         lectureSchedulesData = lectureSchedules;
         sectionSchedulesData = sectionSchedules;
+        StudentID = studentID;
+
+        console.log("Lecture Schedules:", lectureSchedulesData);
+        console.log("Section Schedules:", sectionSchedulesData);
+        console.log("Student ID:", StudentID);
 
         // Get unique subjects
         const subjects = [...new Set(lectureSchedules.map(l => l.Name))];
         populateSubjects(subjects);
-    })
-    .catch(error => {
+    } 
+    catch (error) 
+    {
         console.error('Fetch error:', error);
-    });
+    }
+}
 
-function populateSubjects(subjects) {
+getCourses();
+
+
+function populateSubjects(subjects) 
+{
     const subjectSelect = document.getElementById('subjectSelect');
     subjects.forEach(subject => {
         const option = document.createElement('option');
@@ -31,7 +50,8 @@ function populateSubjects(subjects) {
     });
 }
 
-function populateLecturers() {
+function populateLecturers() 
+{
     const subject = document.getElementById('subjectSelect').value;
     const lecturerSelect = document.getElementById('lecturerSelect');
     lecturerSelect.innerHTML = '<option selected disabled>Select Lecturer</option>';
@@ -52,7 +72,8 @@ function populateLecturers() {
     });
 }
 
-function populateLectureTimes() {
+function populateLectureTimes() 
+{
     const subject = document.getElementById('subjectSelect').value;
     const lecturer = document.getElementById('lecturerSelect').value;
     const lectureTimeSelect = document.getElementById('lectureTimeSelect');
@@ -75,7 +96,8 @@ function populateLectureTimes() {
     });
 }
 
-function populateTutors() {
+function populateTutors() 
+{
     const subject = document.getElementById('subjectSelect').value;
     const tutorSelect = document.getElementById('tutorSelect');
     tutorSelect.innerHTML = '<option selected disabled>Select Tutor</option>';
@@ -94,7 +116,8 @@ function populateTutors() {
     });
 }
 
-function populateTutorTimes() {
+function populateTutorTimes() 
+{
     const subject = document.getElementById('subjectSelect').value;
     const tutor = document.getElementById('tutorSelect').value;
     const sectionTimeSelect = document.getElementById('SectionTimeSelect');
@@ -111,11 +134,10 @@ function populateTutorTimes() {
         option.textContent = timeSlot;
         sectionTimeSelect.appendChild(option);
     });
-
-    document.getElementById('addSubjectBtn').disabled = false;
 }
 
-function addSubjectToSchedule() {
+function addSubjectToSchedule() 
+{
     const subject = document.getElementById('subjectSelect').value;
     const lecturer = document.getElementById('lecturerSelect').value;
     const lectureTime = document.getElementById('lectureTimeSelect').value;
@@ -152,6 +174,7 @@ function addSubjectToSchedule() {
 
     document.getElementById('addSubjectBtn').disabled = true;
     document.getElementById('subjectSelect').disabled = false;
+    document.getElementById('subjectSelect').selectedIndex = 0;
 
     // If max subjects reached
     if (addedSubjects.length === maxSubjects) {
@@ -162,7 +185,8 @@ function addSubjectToSchedule() {
     }
 }
 
-function isConflict(scheduleInfo) {
+function isConflict(scheduleInfo) 
+{
     const [day, startTime] = scheduleInfo.timeslot.split(' - ');
     const row = [...document.getElementById('scheduleBody').rows].find(r => r.cells[0].innerText === day);
     const col = timeToColumnIndex(startTime);
@@ -177,7 +201,8 @@ function isConflict(scheduleInfo) {
     return false;
 }
 
-function insertToTable({ subject, timeslot, type, lecturer, tutor }) {
+function insertToTable({ subject, timeslot, type, lecturer, tutor }) 
+{
     const [day, startTime] = timeslot.split(' - ');
     const row = [...document.getElementById('scheduleBody').rows].find(r => r.cells[0].innerText === day);
     const col = timeToColumnIndex(startTime);
@@ -189,7 +214,8 @@ function insertToTable({ subject, timeslot, type, lecturer, tutor }) {
     setTimeout(() => row.cells[col].classList.remove('pop-in'), 2000);
 }
 
-function timeToColumnIndex(time) {
+function timeToColumnIndex(time) 
+{
 
     const timeMap = {
         "08:00:00": 1,
@@ -201,7 +227,8 @@ function timeToColumnIndex(time) {
     return timeMap[time] ?? -1;
 }
 
-function showAlert(message, type) {
+function showAlert(message, type) 
+{
     const placeholder = document.getElementById('alertPlaceholder');
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} alert-dismissible fade show`;
@@ -210,7 +237,8 @@ function showAlert(message, type) {
     setTimeout(() => alert.remove(), 5000);
 }
 
-function removeSubjectFromTable(subject) {
+function removeSubjectFromTable(subject) 
+{
     document.querySelectorAll('#scheduleBody tr').forEach(row => {
         [...row.cells].slice(1).forEach(cell => {
             if (cell.innerText.includes(subject)) {
@@ -221,18 +249,98 @@ function removeSubjectFromTable(subject) {
     });
 }
 
-function finalize() {
+function finalize() 
+{
     document.getElementById('confirmBtn').style.display = 'none';
     showAlert('Registration confirmed!', 'success');
 
     const changeBtn = document.createElement('button');
     changeBtn.className = 'btn btn-warning mt-3';
     changeBtn.textContent = 'Change Registration';
+    changeBtn.id = "btnn";
     changeBtn.onclick = resetSchedule;
 
-    const container = document.getElementById('tableContainer');
+    const container = document.getElementById('changeContainer');
     container.appendChild(changeBtn);
+
+    const selectedLectureSubjects = [];
+    const selectedSectionSubjects = [];
+
+    // Process each added subject
+    addedSubjects.forEach(subjectObj => {
+        const subjectName = subjectObj.subject;
+        const lectureInfo = subjectObj.lecture;
+        const sectionInfo = subjectObj.section;
+
+        // Find matching lecture in lectureSchedulesData
+        const [lectureDay, lectureStart, lectureEnd] = lectureInfo.timeslot.split(' - ');
+        const matchingLecture = lectureSchedulesData.find(lecture => 
+            lecture.Name === subjectName &&
+            lecture.Lecturer_Name === lectureInfo.lecturer &&
+            lecture.Day_of_Week === lectureDay &&
+            lecture.Start_Time === lectureStart &&
+            lecture.End_Time === lectureEnd
+        );
+        
+        if (matchingLecture) {
+            selectedLectureSubjects.push(matchingLecture);
+        }
+
+        // Find matching section in sectionSchedulesData
+        const [sectionDay, sectionStart, sectionEnd] = sectionInfo.timeslot.split(' - ');
+        const matchingSection = sectionSchedulesData.find(section => 
+            section.Name === subjectName &&
+            section.Tutor_Name === sectionInfo.tutor &&
+            section.Day_of_Week === sectionDay &&
+            section.Start_Time === sectionStart &&
+            section.End_Time === sectionEnd
+        );
+        
+        if (matchingSection) {
+            selectedSectionSubjects.push(matchingSection);
+        }
+    });
+
+    console.log(selectedLectureSubjects); //TODO
+    console.log(selectedSectionSubjects);
+    console.log(StudentID);
+
+
+    const url = 'reciever.php';
+
+    const options = 
+    {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            studentID: StudentID,
+            ectureArray: selectedLectureSubjects,
+            sectionArray: selectedSectionSubjects,
+            })
+    };
+
+    const request = new Request(url, options);
+
+    async function sendRegistrationData() 
+    {
+        try 
+        {
+            const response = await fetch(request);
+            const data = await response.json();
+            const type = data.success ? 'success' : 'danger';
+            showAlert(data.success ? 'Registration saved!' : 'Error: ' + (data.message || 'Unknown'), type);
+        } 
+        catch (error) 
+        {
+            showAlert('Failed to save registration.', 'danger');
+        }   
+    }
+
+    sendRegistrationData();
 }
+
+
+
 
 function resetSchedule() {
     addedSubjects = [];
@@ -244,7 +352,7 @@ function resetSchedule() {
         });
     });
 
-    document.getElementById('seubjectSelct').disabled = false;
+    document.getElementById('subjectSelect').disabled = false;
     document.getElementById('subjectSelect').selectedIndex = 0;
     ['lecturerSelect', 'lectureTimeSelect', 'tutorSelect', 'SectionTimeSelect'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
@@ -253,6 +361,8 @@ function resetSchedule() {
     document.getElementById('confirmBtn').style.display = 'none';
 
     // Remove change button if it exists
-    const changeBtn = document.querySelector('#tableContainer .btn-warning');
-    if (changeBtn) changeBtn.remove();
+    const changeBtn = document.getElementById('btnn');
+    if (changeBtn) {
+        changeBtn.remove();
+    }
 }

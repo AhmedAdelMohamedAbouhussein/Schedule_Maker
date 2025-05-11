@@ -37,7 +37,8 @@ $stmt->close();
 // Step 2: Get all completed courses
 $sql = "SELECT Course_Code FROM CompletedCourses WHERE Student_ID = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
+if (!$stmt) 
+{
     echo json_encode(['error' => 'Prepare statement failed (CompletedCourses)']);
     exit();
 }
@@ -107,7 +108,8 @@ $lectureSchedules = [];
 $sectionSchedules = [];
 
 // Step 5: Loop through recommended courses
-foreach ($recommendedCourses as $courseCode) {
+foreach ($recommendedCourses as $courseCode) 
+{
     // Get Course Name
     $sql = "SELECT Name FROM Course WHERE Course_Code = ?";
     $stmt = $conn->prepare($sql);
@@ -127,7 +129,7 @@ foreach ($recommendedCourses as $courseCode) {
     $stmt->close();
 
     // Get Lecturer info
-    $sql = "SELECT L.Name AS LecturerName, LT.Day_of_Week, LT.Start_Time, LT.End_Time, LT.Room
+    $sql = "SELECT L.Name AS LecturerName, LT.Day_of_Week, LT.Start_Time, LT.End_Time, LT.Room, LT.LectureTime_ID
                 FROM LecturerCourse LC
                 JOIN Lecturer L ON LC.Lecturer_ID = L.Lecturer_ID
                 JOIN LectureTime LT ON LC.Course_Lecture_ID = LT.Lecture_ID
@@ -154,13 +156,14 @@ foreach ($recommendedCourses as $courseCode) {
             'Day_of_Week' => $row['Day_of_Week'],
             'Start_Time' => $row['Start_Time'],
             'End_Time' => $row['End_Time'],
-            'Room' => $row['Room']
+            'Room' => $row['Room'],
+            'LectureTime_ID' => $row['LectureTime_ID']
         ];
     }
     $stmt->close();
 
     // Get Tutor info
-    $sql = "SELECT T.Name AS TutorName, ST.Day_of_Week, ST.Start_Time, ST.End_Time, ST.Room
+    $sql = "SELECT T.Name AS TutorName, ST.Day_of_Week, ST.Start_Time, ST.End_Time, ST.Room, ST.SectionTime_ID
                 FROM TutorCourse TC
                 JOIN Tutor T ON TC.Tutor_ID = T.Tutor_ID
                 JOIN SectionTime ST ON TC.Course_Section_ID = ST.Section_ID
@@ -187,12 +190,13 @@ foreach ($recommendedCourses as $courseCode) {
             'Day_of_Week' => $row['Day_of_Week'],
             'Start_Time' => $row['Start_Time'],
             'End_Time' => $row['End_Time'],
-            'Room' => $row['Room']
+            'Room' => $row['Room'],
+            'SectionTime_ID' => $row['SectionTime_ID']
         ];
     }
     $stmt->close();
 }
 
-echo json_encode(['lectureSchedules' => $lectureSchedules, 'sectionSchedules' => $sectionSchedules]);
+echo json_encode(['lectureSchedules' => $lectureSchedules, 'sectionSchedules' => $sectionSchedules, 'studentID' => $studentID]);
 exit();
 ?>
