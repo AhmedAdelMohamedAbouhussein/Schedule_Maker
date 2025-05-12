@@ -1,33 +1,33 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 session_start(); // Required to use $_SESSION
 include '../Connect_DataBase.php';
 
 // Ensure the content type is set *before* any output
 header('Content-Type: application/json');
 
-// Input: Student ID
-// For debugging, you might want to temporarily hardcode a student ID
-// $studentID = 1;
-$studentID = $_SESSION['ID']; // Or fetch from $_GET/$_POST
+
+$studentID = $_SESSION['ID']; 
 
 // Step 1: Get the student's department
 $sql = "SELECT Department_Name FROM Department WHERE Department_ID = (SELECT Department_ID FROM Student WHERE Student_ID = ?)";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
+if (!$stmt) 
+{
     echo json_encode(['error' => 'Prepare statement failed (Department)']);
     exit();
 }
 $stmt->bind_param("i", $studentID);
 $stmt->execute();
 $result = $stmt->get_result();
-if (!$result) {
+if (!$result) 
+{
     echo json_encode(['error' => 'Get result failed (Department)']);
     exit();
 }
 $departmentRow = $result->fetch_assoc();
-if (!$departmentRow) {
+if (!$departmentRow) 
+{
     echo json_encode(['error' => 'Could not fetch department for student']);
     exit();
 }
@@ -45,19 +45,22 @@ if (!$stmt)
 $stmt->bind_param("i", $studentID);
 $stmt->execute();
 $result = $stmt->get_result();
-if (!$result) {
+if (!$result) 
+{
     echo json_encode(['error' => 'Get result failed (CompletedCourses)']);
     exit();
 }
 
 $completedCourses = [];
-while ($row = $result->fetch_assoc()) {
+while ($row = $result->fetch_assoc()) 
+{
     $completedCourses[] = $row['Course_Code'];
 }
 $stmt->close();
 
 $recommendedCourses = [];
-if (!empty($completedCourses)) {
+if (!empty($completedCourses)) 
+{
     // Step 3: Get first 6 recommended courses where completed course is a prerequisite
     $placeholders = implode(',', array_fill(0, count($completedCourses), '?'));
     $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
@@ -81,7 +84,9 @@ if (!empty($completedCourses)) {
         $recommendedCourses[] = $row['Course_Code'];
     }
     $stmt->close();
-} else {
+} 
+else 
+{
     // Step 4: Assign courses based on the student's department
     if ($department == 'Computer Science') {
         // Assign courses from CS101 to CS106
@@ -98,7 +103,8 @@ if (!empty($completedCourses)) {
     }
 }
 
-if (empty($recommendedCourses)) {
+if (empty($recommendedCourses)) 
+{
     echo json_encode(['lectureSchedules' => [], 'sectionSchedules' => []]);
     exit(); // Ensure we still output JSON even if empty
 }

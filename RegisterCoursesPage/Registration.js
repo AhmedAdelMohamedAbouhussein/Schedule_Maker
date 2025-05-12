@@ -35,8 +35,92 @@ async function getCourses() {
         console.error('Fetch error:', error);
     }
 }
-
 getCourses();
+
+
+
+
+const request2 = new Request("loadEnrolled.php", { method: "GET"});
+
+async function getCourses2() {
+    try 
+    {
+        const response2 = await fetch(request2);
+        if (!response2.ok) 
+        {
+            throw new Error(`HTTP error! status: ${response2.status}`);
+        }
+        const data2 = await response2.json();
+        const { lectures, sections } = data2;
+        console.log(data2);
+        console.log("Lecture Schedules:", lectures);
+        console.log("Section Schedules:", sections);
+
+
+        LoadSubjectToSchedule(lectures, sections)
+
+
+    } 
+    catch (error) 
+    {
+        console.error('Fetch error:', error);
+    }
+}
+getCourses2();
+
+
+
+function LoadSubjectToSchedule(lectures, sections) {
+    lectures.forEach(lecture => {
+        const subject = lecture.Course_Code;
+        const time = `${lecture.Day_of_Week} - ${lecture.Start_Time} - ${lecture.End_Time}`;
+        const lecturer = lecture.Lecturer_Name;
+
+        // Find corresponding section for the same course
+        const section = sections.find(sec => sec.Course_Code === subject);
+        if (!section) return;
+
+        const sectionTime = `${section.Day_of_Week} - ${section.Start_Time} - ${section.End_Time}`;
+        const tutor = section.Tutor_Name;
+
+        const lectureInfo = { subject, timeslot: time, type: 'Lecture', lecturer };
+        const sectionInfo = { subject, timeslot: sectionTime, type: 'Section', tutor };
+
+        // Remove old entry if subject already exists
+        if (addedSubjects.some(s => s.subject === subject)) {
+            removeSubjectFromTable(subject);
+            addedSubjects = addedSubjects.filter(s => s.subject !== subject);
+        }
+
+        // Check for conflicts
+        if (isConflict(lectureInfo) || isConflict(sectionInfo)) {
+            showAlert(`Time conflict with ${subject}. Please choose another time.`, 'danger');
+            return;
+        }
+
+        insertToTable(lectureInfo);
+        insertToTable(sectionInfo);
+        addedSubjects.push({ subject, lecture: lectureInfo, section: sectionInfo });
+    });
+
+    if (addedSubjects.length === maxSubjects) 
+    {
+        document.getElementById('subjectSelect').disabled = true;
+        document.getElementById('addSubjectBtn').disabled = true;
+        const changeBtn = document.createElement('button');
+        changeBtn.className = 'btn btn-warning mt-3';
+        changeBtn.textContent = 'Change Registration';
+        changeBtn.id = "btnn";
+        changeBtn.onclick = resetSchedule;
+
+        const container = document.getElementById('changeContainer');
+        container.appendChild(changeBtn);
+        showAlert('Loaded Schedule successfully', 'success');
+    }
+}
+
+
+
 
 
 function populateSubjects(subjects) 
@@ -314,7 +398,7 @@ function finalize()
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             studentID: StudentID,
-            ectureArray: selectedLectureSubjects,
+            lectureArray: selectedLectureSubjects,
             sectionArray: selectedSectionSubjects,
             })
     };
@@ -326,9 +410,16 @@ function finalize()
         try 
         {
             const response = await fetch(request);
+
+            if (!response.ok) 
+            {
+                const text = await response.text();
+                console.error('Non-OK response:', text);
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
             const data = await response.json();
             const type = data.success ? 'success' : 'danger';
-            showAlert(data.success ? 'Registration saved!' : 'Error: ' + (data.message || 'Unknown'), type);
+            //showAlert(data.success ? 'Registration saved!' : 'Error: ' + (data.message || 'Unknown'), type);
         } 
         catch (error) 
         {
