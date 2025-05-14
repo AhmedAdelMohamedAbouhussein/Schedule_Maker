@@ -161,3 +161,34 @@ td.subject
 {
     animation: shake 0.4s ease;
 }
+#scheduleTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: none;
+}
+
+#scheduleTable th,
+#scheduleTable td {
+  border: 1px solid #ccc; /* soft gray inner grid lines */
+}
+#scheduleTable th,
+#scheduleTable td {
+  border: 1px solid #0055aa;
+}
+  @keyframes themedBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes glowPulse {
+    0% { filter: drop-shadow(0 0 5px gold); }
+    50% { filter: drop-shadow(0 0 12px gold); }
+    100% { filter: drop-shadow(0 0 5px gold); }
+  }
+
+  /* Apply this to the animated background div */
+  body > div[style*="position: fixed"] {
+    background: linear-gradient(135deg, #003366 0%, #005BAC 100%);
+  }

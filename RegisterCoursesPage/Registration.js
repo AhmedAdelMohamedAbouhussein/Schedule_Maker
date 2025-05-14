@@ -419,11 +419,11 @@ function finalize()
             }
             const data = await response.json();
             const type = data.success ? 'success' : 'danger';
-            //showAlert(data.success ? 'Registration saved!' : 'Error: ' + (data.message || 'Unknown'), type);
+            showAlert(data.success ? 'Registration saved!' : 'Error: ' + (data.message || 'Unknown'), type);
         } 
         catch (error) 
         {
-            showAlert('Failed to save registration.', 'danger');
+            //showAlert('Failed to save registration.', 'danger');
         }   
     }
 
