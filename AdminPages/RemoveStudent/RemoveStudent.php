@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         {
             echo "<script>
                 alert('Invalid ID format. Must be exactly 9 digits.');
-                window.location.href = 'RemoveStudent.HTML';
+                window.location.href = '../Add_Remove_Students/Add_Remove.html';
             </script>";
             exit();
         }
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         if (mysqli_num_rows($check) === 0) {
             echo "<script>
                 alert('ID doesnt exist.');
-                window.location.href = 'RemoveStudent.HTML';
+                window.location.href = '../Add_Remove_Students/Add_Remove.html';
             </script>";
             exit();
         }
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         {
             echo "<script>
                     alert('Student Deleted Successfully.');
-                    window.location.href = 'RemoveStudent.HTML';
+                    window.location.href = '../Add_Remove_Students/Add_Remove.html';
                 </script>";
             exit();
         } 
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         {
             echo "<script>
                     alert('Deletion Failed.');
-                    window.location.href = 'RemoveStudent.HTML';
+                    window.location.href = '../Add_Remove_Students/Add_Remove.html';
                 </script>";
             exit();
         }

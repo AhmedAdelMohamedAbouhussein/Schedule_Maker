@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>AASTMT Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="Add_Remove.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="logo-bar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/AASTMT_Logo.png" alt="AAST Logo" />
+    </div>
+
+    <div class="center-wrap">
+        <div id="welcome-message">Welcome, Admin</div>
+
+        <div class="center-card" id="main-card">
+            <div class="action-btn-row">
+                <button class="main-btn btn-add" onclick="openModal('add')">Add Student</button>
+                <button class="main-btn btn-remove" onclick="openModal('remove')">Remove Student</button>
+                <button class="main-btn" onclick="location.href='../Edit_Student_Schedule/Edit_Student_Schedule.HTML'">
+                    View/Edit Student's Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-modal" class="modal">
+        <div class="modal-bg-blur"></div>
+        <div class="modal-content">
+            <button class="close" onclick="closeModal('add')">&times;</button>
+            <h2>Add Student</h2>
+            <form action="../AddStudent/Insert_Student.php" method="post" onsubmit="return validateAddForm()">
+                <label for="add-studentID">Student ID (9 digits):</label>
+                <input type="text" id="add-studentID" name="studentID" required />
+
+                <label for="add-name">Name:</label>
+                <input type="text" id="add-name" name="name" required />
+
+                <label for="add-pin">PIN (6 digits):</label>
+                <input type="password" id="add-pin" name="pin" required />
+
+                <label for="add-term">Term:</label>
+                <input type="number" id="add-term" name="term" required />
+
+                <label for="add-departmentID">Department ID:</label>
+                <input type="number" id="add-departmentID" name="departmentID" required />
+
+                <input type="submit" name="Add Student" value="Add Student" />
+            </form>
+            <div id="add-response" class="response-message"></div>
+        </div>
+    </div>
+
+    <div id="remove-modal" class="modal">
+        <div class="modal-bg-blur"></div>
+        <div class="modal-content">
+            <button class="close" onclick="closeModal('remove')">&times;</button>
+            <h2>Remove Student</h2>
+            <form id="removeForm" action="../RemoveStudent/RemoveStudent.php" method="post" onsubmit="return validateRemoveForm()">
+                <label for="remove-studentID">Student ID (9 digits):</label>
+                <input type="text" id="remove-studentID" name="studentID" required />
+                <input type="submit" name="Remove Student" value="Remove Student" />
+            </form>
+            <div id="remove-response" class="response-message"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 AASTMT. All rights reserved. | <a href="https://www.aast.edu" target="_blank">www.aast.edu</a>
+    </div>
+    <script src="Add_Remove.JS"></script>
+</body>
+</html>

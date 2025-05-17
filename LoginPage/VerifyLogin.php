@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $hashedPIN = $row['PIN']; // Assuming PIN is hashed
             if (password_verify($PIN, $hashedPIN)) 
             {
-                header("Location: ../AdminPages/MainPanel/Admin.html");
+                header("Location: ../AdminPages/Add_Remove_Students/Add_Remove.html");
                 exit();
             } 
             else 
