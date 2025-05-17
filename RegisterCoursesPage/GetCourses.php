@@ -202,7 +202,7 @@ foreach ($recommendedCourses as $courseCode)
     }
     $stmt->close();
 }
-
+$conn->close();
 echo json_encode(['lectureSchedules' => $lectureSchedules, 'sectionSchedules' => $sectionSchedules, 'studentID' => $studentID]);
 exit();
 ?>

@@ -431,8 +431,6 @@ function finalize()
 }
 
 
-
-
 function resetSchedule() {
     addedSubjects = [];
 

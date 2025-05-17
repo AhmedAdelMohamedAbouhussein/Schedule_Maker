@@ -82,7 +82,7 @@ if ($json === false)
     ]);
     exit;
 }
-
+$conn->close();
 echo $json;
 exit;
 ?>

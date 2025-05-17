@@ -133,5 +133,5 @@ echo json_encode([
     'lectures' => $lectureDetails,
     'sections' => $sectionDetails
 ]);
-
+$conn->close();
 ?>

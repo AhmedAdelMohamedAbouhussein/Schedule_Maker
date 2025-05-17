@@ -1,69 +1,90 @@
 <?php
-    session_start();
-    include("../Connect_DataBase.php"); // Include the database connection file
+session_start();
+include("../Connect_DataBase.php"); // Include the database connection file
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") 
-    {
-        if(isset($_POST['login'])) 
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['login'])) {
+        // Sanitize inputs
+        $ID = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_NUMBER_INT);
+        $PIN = filter_input(INPUT_POST, 'PIN', FILTER_SANITIZE_NUMBER_INT);
+
+        // Validate ID and PIN
+        if (!preg_match('/^\d{9}$/', $ID)) {
+            echo "<script>
+                alert('Invalid ID format. Must be 9 digits.');
+                window.location.href = 'LoginPage.HTML';
+            </script>";
+            exit();
+        }
+
+        if (!preg_match('/^\d{6}$/', $PIN)) {
+            echo "<script>
+                alert('Invalid PIN format. Must be 6 digits.');
+                window.location.href = 'LoginPage.HTML';
+            </script>";
+            exit();
+        }
+
+        // Try Student login
+        $stmt = $conn->prepare("SELECT * FROM Student WHERE Student_ID = ?");
+        $stmt->bind_param("i", $ID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $row = $result->fetch_assoc()) 
         {
-            // Sanitize inputs
-            $ID = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_NUMBER_INT);
-            $PIN = filter_input(INPUT_POST, 'PIN', FILTER_SANITIZE_NUMBER_INT);
+            $stmt->close();
 
-            // Validate ID and PIN
-            if (!preg_match('/^\d{9}$/', $ID)) 
+            $hashedPIN = $row['PIN']; // Assuming PIN is hashed
+            if (password_verify($PIN, $hashedPIN)) 
             {
-                die("Invalid ID format");
+                $_SESSION['ID'] = $ID;
+                header("Location: ../RegisterCoursesPage/Registration.HTML");
+                exit();
             }
-
-            if (!preg_match('/^\d{6}$/', $PIN)) 
+            else 
             {
-                die("Invalid PIN format");
+                echo "<script>
+                    alert('Incorrect PIN for Student.');
+                    window.location.href = 'LoginPage.HTML';
+                </script>";
+                exit();
             }
-            
-            $stmt = $conn->prepare("SELECT * FROM Student WHERE Student_ID = ?");
-            $stmt->bind_param("i", $ID);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        }
+        $stmt->close();
 
-            if ($result) 
+        // Try Admin login
+        $stmt = $conn->prepare("SELECT * FROM Admin WHERE Admin_ID = ?");
+        $stmt->bind_param("i", $ID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result && $row = $result->fetch_assoc()) {
+            $stmt->close();
+
+            $hashedPIN = $row['PIN']; // Assuming PIN is hashed
+            if (password_verify($PIN, $hashedPIN)) 
             {
-                $row = $result->fetch_assoc();
-                if ($row) 
-                {
-                    $hashedPIN = $row['PIN']; // Assuming the hashed PIN is stored in the database
-
-                    if(password_verify($PIN, $hashedPIN)) 
-                    {
-                        // Password is correct, proceed with login
-                        $_SESSION['ID'] = $ID;
-                        header("Location: ../RegisterCoursesPage/Registration.HTML"); // Redirect to the next page after login
-                        exit(); // Ensure no further code is executed after the redirect
-                    }
-                    else 
-                    {
-                        // Password is incorrect, show error message
-                        echo "<script>
-                        alert('PIN Doesn\'t Exist.');
-                        window.location.href = 'LoginPage.HTML'; // Redirect after alert
-                        </script>";
-                        exit(); // Ensure no further code is executed after the redirect
-                    }
-                } 
-                else 
-                {
-                    // Password is incorrect, show error message
-                    echo "<script>
-                    alert('ID Doesn\'t Exist.');
-                    window.location.href = 'LoginPage.HTML'; // Redirect after alert
-                    </script>";
-                    exit(); // Ensure no further code is executed after the redirect
-                }
+                header("Location: ../AdminPages/MainPanel/Admin.html");
+                exit();
             } 
             else 
             {
-                echo "<script>alert('Database query failed.');</script>";
+                echo "<script>
+                    alert('Incorrect PIN for Admin.');
+                    window.location.href = 'LoginPage.HTML';
+                </script>";
+                exit();
             }
         }
+        $stmt->close();
+
+        // If reached here, ID not found in either table
+        echo "<script>
+            alert('ID does not exist in the system.');
+            window.location.href = 'LoginPage.HTML';
+        </script>";
+        exit();
     }
+}
 ?>
