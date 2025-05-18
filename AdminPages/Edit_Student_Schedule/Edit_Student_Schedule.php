@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         if (!preg_match('/^\d{9}$/', $student_id)) {
             echo "<script>
                 alert('Invalid Student ID. Must be exactly 9 digits.');
-                window.location.href = 'Add_Student.HTML';
+                window.location.href = '../Add_Remove_Students/Add_Remove.html';
             </script>";
             exit();
         }
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST")
         {
             echo "<script>
                 alert('Student ID doesn't exists.');
-                window.location.href = 'Add_Student.HTML';
+                window.location.href = '../Add_Remove_Students/Add_Remove.html';
             </script>";
             exit();
         }

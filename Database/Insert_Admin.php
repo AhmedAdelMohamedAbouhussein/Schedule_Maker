@@ -10,7 +10,8 @@ $admins = [
     [999000002, '654321']
 ];
 
-foreach ($admins as $admin) {
+foreach ($admins as $admin) 
+{
     $admin_id = $admin[0];
     $pin = $admin[1];
     $hashed_pin = hashPin($pin);

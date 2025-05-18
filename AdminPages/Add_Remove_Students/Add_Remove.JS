@@ -3,33 +3,49 @@ function openModal(type)
     document.getElementById(type + "-modal").classList.add("open");
     document.body.style.overflow = "hidden";
 }
-function closeModal(type) {
+
+function closeModal(type) 
+{
     document.getElementById(type + "-modal").classList.remove("open");
     document.body.style.overflow = "";
     if (type === "add") document.getElementById("add-response").innerHTML = "";
     if (type === "remove") document.getElementById("remove-response").innerHTML = "";
+    if (type === "view") document.getElementById("view-response").innerHTML = "";
 }
-document.querySelectorAll(".modal").forEach(function (modal) {
-    modal.addEventListener("click", function (e) {
-        if (e.target === modal || e.target.classList.contains("modal-bg-blur")) {
+
+document.querySelectorAll(".modal").forEach(function (modal) 
+{
+    modal.addEventListener("click", function (e) 
+    {
+        if (e.target === modal || e.target.classList.contains("modal-bg-blur")) 
+        {
             closeModal(modal.id.replace("-modal", ""));
         }
     });
 });
 
-function validateID() 
+function validateRemoveID() 
 {
     const studentID = document.getElementById('remove-studentID').value.trim();
     const responseDiv = document.getElementById('remove-response');
-
-    if (!/^\d{9}$/.test(studentID)) 
-    {
+    if (!/^\d{9}$/.test(studentID)) {
         responseDiv.innerHTML = "Student ID must be exactly 9 digits.";
         return false;
     }
-
     return true;
 }
+
+function validateViewID() 
+{
+    const studentID = document.getElementById('view-studentID').value.trim();
+    const responseDiv = document.getElementById('view-response');
+    if (!/^\d{9}$/.test(studentID)) {
+        responseDiv.innerHTML = "Student ID must be exactly 9 digits.";
+        return false;
+    }
+    return true;
+}
+
 
 
 function validateAddForm() 

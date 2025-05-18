@@ -19,9 +19,7 @@
             <div class="action-btn-row">
                 <button class="main-btn btn-add" onclick="openModal('add')">Add Student</button>
                 <button class="main-btn btn-remove" onclick="openModal('remove')">Remove Student</button>
-                <button class="main-btn" onclick="location.href='../Edit_Student_Schedule/Edit_Student_Schedule.HTML'">
-                    View/Edit Student's Schedule
-                </button>
+                <button class="main-btn btn-view" onclick="openModal('view')">View / Edit Student's Schedule</button>
             </div>
         </div>
     </div>
@@ -58,12 +56,26 @@
         <div class="modal-content">
             <button class="close" onclick="closeModal('remove')">&times;</button>
             <h2>Remove Student</h2>
-            <form id="removeForm" action="../RemoveStudent/RemoveStudent.php" method="post" onsubmit="return validateRemoveForm()">
+            <form id="removeForm" action="../RemoveStudent/RemoveStudent.php" method="post" onsubmit="return validateRemoveID()">
                 <label for="remove-studentID">Student ID (9 digits):</label>
                 <input type="text" id="remove-studentID" name="studentID" required />
                 <input type="submit" name="Remove Student" value="Remove Student" />
             </form>
             <div id="remove-response" class="response-message"></div>
+        </div>
+    </div>
+
+    <div id="view-modal" class="modal">
+        <div class="modal-bg-blur"></div>
+        <div class="modal-content">
+            <button class="close" onclick="closeModal('view')">&times;</button>
+            <h2>View / Edit Student's Schedule</h2>
+            <form id="viewForm" action="../Edit_Student_Schedule/Edit_Student_Schedule.php" method="post" onsubmit="return validateViewID()">
+                <label for="view-studentID">Student ID (9 digits):</label>
+                <input type="text" id="view-studentID" name="studentID" required />
+                <input type="submit" name="view Student" value="view Student" />
+            </form>
+            <div id="view-response" class="response-message"></div>
         </div>
     </div>
 
