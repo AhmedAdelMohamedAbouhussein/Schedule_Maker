@@ -3,12 +3,14 @@ CREATE DATABASE IF NOT EXISTS ScheduleDB;
 USE ScheduleDB;
 
 -- Table: Department
-CREATE TABLE Department (
+CREATE TABLE Department 
+(
     Department_ID INT AUTO_INCREMENT PRIMARY KEY,
     Department_Name VARCHAR(255) NOT NULL
 );
 -- Table: Course
-CREATE TABLE Course (
+CREATE TABLE Course 
+(
     Course_Code VARCHAR(20) PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     Credit_Hours INT NOT NULL,
@@ -17,9 +19,10 @@ CREATE TABLE Course (
         ON DELETE SET NULL ON UPDATE CASCADE
 );
 -- Table: Prerequisite
-CREATE TABLE Prerequisite (
-    Course_Code VARCHAR(20),
-    Prerequisite_Code VARCHAR(20),
+CREATE TABLE Prerequisite 
+(
+    Course_Code VARCHAR(20) NOT NULL,
+    Prerequisite_Code VARCHAR(20) NULL,
     PRIMARY KEY (Course_Code, Prerequisite_Code),
     FOREIGN KEY (Course_Code) REFERENCES Course(Course_Code)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -27,7 +30,8 @@ CREATE TABLE Prerequisite (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 -- Table: Lecturer
-CREATE TABLE Lecturer (
+CREATE TABLE Lecturer 
+(
     Lecturer_ID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     Department_ID INT,
@@ -36,7 +40,8 @@ CREATE TABLE Lecturer (
 );
 
 -- Table: Tutor
-CREATE TABLE Tutor (
+CREATE TABLE Tutor 
+(
     Tutor_ID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     Department_ID INT,
@@ -48,12 +53,13 @@ CREATE TABLE Tutor (
 CREATE TABLE Section 
 (
     Section_ID INT AUTO_INCREMENT PRIMARY KEY,
-    Max_Students INT NOT NULL,
+    Max_Students INT NOT NULL
 );
 
 
 -- Table: Lecture
-CREATE TABLE Lecture ( 
+CREATE TABLE Lecture 
+( 
     Lecture_ID INT AUTO_INCREMENT PRIMARY KEY,
     Section_ID INT,
     FOREIGN KEY (Section_ID) REFERENCES Section(Section_ID)
@@ -74,7 +80,8 @@ CREATE TABLE SectionTime
 );
 
 -- Table: LectureTime
-CREATE TABLE LectureTime (
+CREATE TABLE LectureTime 
+(
     LectureTime_ID INT AUTO_INCREMENT PRIMARY KEY,
     Lecture_ID INT,
     Day_of_Week VARCHAR(10) NOT NULL,
@@ -102,7 +109,8 @@ CREATE TABLE LecturerCourse
 );
 
 -- Table: TutorCourse
-CREATE TABLE TutorCourse (
+CREATE TABLE TutorCourse 
+(
     Tutor_ID INT,
     Course_Code VARCHAR(20),
     Course_Section_ID INT,
@@ -117,7 +125,8 @@ CREATE TABLE TutorCourse (
 
 
 -- Table: Student
-CREATE TABLE Student (
+CREATE TABLE Student 
+(
     Student_ID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(255) NOT NULL,
     PIN VARCHAR(255) NOT NULL,
@@ -129,7 +138,8 @@ CREATE TABLE Student (
 
 
 -- Table: CompletedCourses
-CREATE TABLE CompletedCourses (
+CREATE TABLE CompletedCourses 
+(
     Student_ID INT,
     Course_Code VARCHAR(20),
     Completion_Date DATE NOT NULL,
@@ -142,7 +152,8 @@ CREATE TABLE CompletedCourses (
 );
 
 -- Table: Enroll
-CREATE TABLE Enrollment (
+CREATE TABLE Enrollment 
+(
     Student_ID INT,
     Course_Code VARCHAR(20),
     Enrollment_Date DATE NOT NULL,
@@ -160,4 +171,8 @@ CREATE TABLE Enrollment (
         ON DELETE SET NULL ON UPDATE CASCADE
 );
 
---tecerflow
+CREATE TABLE Admin 
+(
+    Admin_ID INT PRIMARY KEY,
+    PIN VARCHAR(255) NOT NULL
+);

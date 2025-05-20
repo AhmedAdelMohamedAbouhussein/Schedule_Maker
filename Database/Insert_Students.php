@@ -1,4 +1,6 @@
 <?php
+include("../Connect_DataBase.php");
+
 // Function to hash PINs
 function hashPin($pin) {
     return password_hash((string)$pin, PASSWORD_DEFAULT);

@@ -1,5 +1,11 @@
 -- Corrected CS Prerequisites: Only CS101 to CS106 have no prerequisites
 INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
+('CS101', NULL),
+('CS102', NULL),
+('CS103', NULL),
+('CS104', NULL),
+('CS105', NULL),
+('CS106', NULL),
 ('CS107', 'CS101'),
 ('CS108', 'CS102'),
 ('CS109', 'CS103'),
@@ -47,6 +53,12 @@ INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
 
 -- Corrected LAW Prerequisites: Only LAW101 to LAW106 have no prerequisites
 INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
+('LAW101', NULL),
+('LAW102', NULL),
+('LAW103', NULL),
+('LAW104', NULL),
+('LAW105', NULL),
+('LAW106', NULL),
 ('LAW107', 'LAW101'),
 ('LAW108', 'LAW102'),
 ('LAW109', 'LAW103'),
@@ -94,6 +106,12 @@ INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
 
 -- Corrected BUS Prerequisites: Only BUS101 to BUS106 have no prerequisites
 INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
+('BUS101', NULL),
+('BUS102', NULL),
+('BUS103', NULL),
+('BUS104', NULL),
+('BUS105', NULL),
+('BUS106', NULL),
 ('BUS107', 'BUS101'),
 ('BUS108', 'BUS102'),
 ('BUS109', 'BUS103'),
@@ -130,6 +148,12 @@ INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
 
 -- Prerequisite Insertions for Courses
 INSERT INTO Prerequisite (Course_Code, Prerequisite_Code) VALUES
+('ENG101', NULL),
+('ENG102', NULL),
+('ENG103', NULL),
+('ENG104', NULL),
+('ENG105', NULL),
+('ENG106', NULL),
 ('ENG107', 'ENG101'),
 ('ENG108', 'ENG102'),
 ('ENG109', 'ENG103'),

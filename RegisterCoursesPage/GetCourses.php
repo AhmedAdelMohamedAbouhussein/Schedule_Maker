@@ -61,18 +61,116 @@ $stmt->close();
 $recommendedCourses = [];
 if (!empty($completedCourses)) 
 {
-    // Step 3: Get first 6 recommended courses where completed course is a prerequisite
-    $placeholders = implode(',', array_fill(0, count($completedCourses), '?'));
+    // Build placeholders for IN and NOT IN clauses
+    $placeholdersIn = implode(',', array_fill(0, count($completedCourses), '?'));
+    $placeholdersNotIn = implode(',', array_fill(0, count($completedCourses), '?'));
+
     $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
-                WHERE Prerequisite_Code IN ($placeholders)
-                LIMIT 6";
+            WHERE Prerequisite_Code IN ($placeholdersIn)
+            AND Course_Code NOT IN ($placeholdersNotIn)
+            LIMIT 6";
 
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo json_encode(['error' => 'Prepare statement failed (Prerequisite)']);
         exit();
     }
-    $stmt->bind_param(str_repeat("s", count($completedCourses)), ...$completedCourses);
+
+    // Bind parameters: first for IN clause, then for NOT IN clause
+    $params = array_merge($completedCourses, $completedCourses);
+    $types = str_repeat('s', count($params));  // assuming Course_Code is string
+
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    if (!$result) {
+        echo json_encode(['error' => 'Get result failed (Prerequisite)']);
+        exit();
+    }
+
+    $recommendedCourses = [];
+    while ($row = $result->fetch_assoc()) {
+        $recommendedCourses[] = $row['Course_Code'];
+    }
+    $stmt->close();
+} 
+else
+{
+    // Map department names to course code prefixes
+    $deptPrefixes = 
+    [
+        'Computer Science' => 'CS',
+        'Engineering' => 'ENG',
+        'Law' => 'LAW',
+        'Business' => 'BUS'
+    ];
+
+    // Get prefix for current department or fallback to empty string
+    $prefix = isset($deptPrefixes[$department]) ? $deptPrefixes[$department] : '';
+
+    // Prepare SQL to get first 6 courses with no prerequisites and matching prefix
+    $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
+            WHERE Prerequisite_Code IS NULL
+            AND Course_Code LIKE ?
+            LIMIT 6";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo json_encode(['error' => 'Prepare statement failed (No Prerequisite)']);
+        exit();
+    }
+
+    // Bind parameter with prefix + '%' for LIKE operator
+    $likeParam = $prefix . '%';
+    $stmt->bind_param("s", $likeParam);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if (!$result) 
+    {
+        echo json_encode(['error' => 'Get result failed (No Prerequisite)']);
+        exit();
+    }
+
+    $recommendedCourses = [];
+    while ($row = $result->fetch_assoc()) {
+        $recommendedCourses[] = $row['Course_Code'];
+    }
+    $stmt->close();
+}
+
+if (count($completedCourses) < 6 && count($recommendedCourses) < 6) {
+    // Handle when there are completed courses to exclude
+    if (!empty($completedCourses)) {
+        $placeholdersNotIn = implode(',', array_fill(0, count($completedCourses), '?'));
+        $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
+                WHERE Prerequisite_Code IS NULL
+                AND Course_Code NOT IN ($placeholdersNotIn)
+                LIMIT 6";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            echo json_encode(['error' => 'Prepare failed (Prerequisite NOT IN)']);
+            exit();
+        }
+
+        $types = str_repeat('s', count($completedCourses)); // assuming Course_Code is string
+        $stmt->bind_param($types, ...$completedCourses);
+    } else {
+        // No completed courses, so skip NOT IN clause
+        $sql = "SELECT DISTINCT Course_Code FROM Prerequisite
+                WHERE Prerequisite_Code IS NULL
+                LIMIT 6";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            echo json_encode(['error' => 'Prepare failed (Prerequisite no NOT IN)']);
+            exit();
+        }
+        // No params to bind
+    }
+
     $stmt->execute();
     $result = $stmt->get_result();
     if (!$result) {
@@ -84,24 +182,8 @@ if (!empty($completedCourses))
         $recommendedCourses[] = $row['Course_Code'];
     }
     $stmt->close();
-} 
-else 
-{
-    // Step 4: Assign courses based on the student's department
-    if ($department == 'Computer Science') {
-        // Assign courses from CS101 to CS106
-        $recommendedCourses = ['CS101', 'CS102', 'CS103', 'CS104', 'CS105', 'CS106'];
-    } elseif ($department == 'Engineering') {
-        // Assign courses from ENG101 to ENG106
-        $recommendedCourses = ['ENG101', 'ENG102', 'ENG103', 'ENG104', 'ENG105', 'ENG106'];
-    } elseif ($department == 'Law') {
-        // Assign courses from LAW101 to LAW106
-        $recommendedCourses = ['LAW101', 'LAW102', 'LAW103', 'LAW104', 'LAW105', 'LAW106'];
-    } elseif ($department == 'Business') {
-        // Assign courses from BUS101 to BUS106
-        $recommendedCourses = ['BUS101', 'BUS102', 'BUS103', 'BUS104', 'BUS105', 'BUS106'];
-    }
 }
+
 
 if (empty($recommendedCourses)) 
 {
