@@ -5,14 +5,94 @@ body
     animation: fadeIn 1s ease-out;
 }
 
-header 
-{
-    background-color: #003366;
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #003366cc;
+    padding: 18px 40px;
     color: white;
-    padding: 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+    margin-bottom: 0;
+    animation: fadeIn 1.2s ease;
+    z-index: 10;
+    position: relative;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.header-logo {
+    width: 72px;
+    filter: drop-shadow(0 0 8px gold);
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 1.07rem;
+    margin: 2px 0 0 0;
+    color: #ffe988;
+    font-weight: 400;
+}
+
+.header-right .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    background: #0040803a;
+    border-radius: 18px;
+    padding: 6px 15px 6px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid gold;
+    box-shadow: 0 0 8px gold;
+}
+
+.header-wave {
+    width: 100vw;
+    min-width: 100%;
+    margin: 0;
+    line-height: 0;
+    z-index: 5;
+    position: relative;
+    background: none;
+    overflow: hidden;
+    margin-bottom: -14px;
+}
+
+.info-bar {
+    background: #005BACcc;
+    color: #fffde4;
     text-align: center;
-    opacity: 0;
-    animation: fadeIn 1.5s ease-out forwards 0.5s;
+    padding: 7px 0;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    margin-bottom: 18px;
+    animation: fadeIn 2s ease;
+}
+
+.info-bar a {
+    color: #ffe988;
+    text-decoration: underline;
 }
 
 .selector 
@@ -122,18 +202,6 @@ td.subject
 
 @keyframes popIn 
 {
-    from 
-    {
-        transform: scale(0);
-    }
-    to 
-    {
-        transform: scale(1);
-    }
-}
-
-@keyframes popIn 
-{
     0% { transform: scale(0.8); opacity: 0; }
     60% { transform: scale(1.05); opacity: 1; }
     100% { transform: scale(1); }
@@ -170,25 +238,39 @@ td.subject
 
 #scheduleTable th,
 #scheduleTable td {
-  border: 1px solid #ccc; /* soft gray inner grid lines */
-}
-#scheduleTable th,
-#scheduleTable td {
   border: 1px solid #0055aa;
 }
-  @keyframes themedBackground {
+
+@keyframes themedBackground {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-  }
+}
 
-  @keyframes glowPulse {
+@keyframes glowPulse {
     0% { filter: drop-shadow(0 0 5px gold); }
     50% { filter: drop-shadow(0 0 12px gold); }
     100% { filter: drop-shadow(0 0 5px gold); }
-  }
+}
 
-  /* Apply this to the animated background div */
-  body > div[style*="position: fixed"] {
+body > div[style*="position: fixed"] {
     background: linear-gradient(135deg, #003366 0%, #005BAC 100%);
-  }
+}
+
+
+@media (max-width: 800px) {
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px 10vw;
+    }
+    .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .header-logo { width: 52px; }
+    .main-header h1 { font-size: 1.3rem; }
+    .avatar { width: 32px; height: 32px; }
+}

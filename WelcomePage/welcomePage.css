@@ -186,26 +186,3 @@
         max-width: 200px;
         margin-bottom: 1.5rem;
     }
-
-    /* Language Toggle */
-    .language-toggle {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 10px;
-    }
-    .language-toggle a {
-        color: var(--white);
-        text-decoration: none;
-        font-weight: 500;
-        opacity: 0.7;
-        transition: opacity 0.3s;
-    }
-    .language-toggle a:hover, .language-toggle a.active {
-        opacity: 1;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-    }
-    .language-toggle a.active {
-        font-weight: bold;
-    }

@@ -128,5 +128,12 @@ function validateAddForm()
         responseDiv.innerHTML = "Name must be longer than 8 characters.";
         return false;
     }
+
+    if (!/^[a-zA-Z]+$/.test(name)) 
+    {
+        responseDiv.innerHTML = "Name must contain only letters (a–z or A–Z).";
+        return false;
+    }
+
     return true;
 }

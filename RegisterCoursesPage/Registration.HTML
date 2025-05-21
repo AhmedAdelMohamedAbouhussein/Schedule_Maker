@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,20 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="Registration.css" rel="stylesheet">
-  <title>Schedule Viewer</title>
 </head>
 <body>
 
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column;">
+  <!-- Modern App Header -->
+  <header class="main-header">
+    <div class="header-left">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/AASTMT_Logo.png" alt="AAST Logo" class="header-logo">
+      <div>
+        <h1>AASTMT Schedule Maker</h1>
+        <p class="subtitle">Register. Organize. Succeed.</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <img src="https://ui-avatars.com/api/?name=Student&background=003366&color=fff" alt="User Avatar" class="avatar">
+        <span>Hello, Student!</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Decorative Wavy SVG Divider -->
+  <div class="header-wave">
+    <svg viewBox="0 0 1440 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#005BAC" fill-opacity="1" d="M0,40 C360,90 1080,-10 1440,40 L1440,90 L0,90 Z"></path>
+    </svg>
+  </div>
+
+  <!-- Info Bar -->
+  <div class="info-bar">
+    <span>📅 Registration closes <b>May 31st</b> &nbsp; | &nbsp; Need help?
+      <a href="https://aast.edu/en/contacts/contact-us.php" style="color:#ffe988;" target="_blank" rel="noopener">Contact us</a>
+    </span>
+  </div>
 
   <!-- Animated Blue Gradient Background -->
   <div style="position: fixed; inset: 0; z-index: -1; background: linear-gradient(135deg, #003366 0%, #005BAC 100%);
   background-size: 400% 400%; animation: themedBackground 20s ease infinite;"></div>
-
-  <!-- Glowing AAST Logo Top Left -->
-  <div style="display: flex; align-items: center; padding: 15px 30px;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/AASTMT_Logo.png" alt="AAST Logo" style="width: 100px; filter: drop-shadow(0 0 6px gold); animation: glowPulse 2s ease-in-out infinite;">
-  </div>
 
   <!-- Main Content -->
   <div style="flex: 1;">
@@ -85,10 +107,11 @@
     </div>
   </div>
 
-  <!-- Footer stays at bottom -->
+  <!-- Footer -->
   <footer class="text-center py-3" style="background-color: #003366; color: white;">
     &copy; 2025 Arab Academy for Science, Technology and Maritime Transport. All rights reserved.
   </footer>
 
   <script src="Registration.js"></script>
 </body>
+</html>

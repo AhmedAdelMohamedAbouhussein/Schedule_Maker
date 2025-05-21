@@ -72,48 +72,54 @@
             }
         }
         @keyframes neonRace {
-          0% {
-            background-position: 0% 50%;
-          }
-          100% {
+            0% 
+            {
+                background-position: 0% 50%;
+            }
+            100% 
+            {
             background-position: 400% 50%;
-          }
+            }
         }
 
-        /* Glow keyframes green - toned down */
-        @keyframes glowGreen {
-          0% {
-            box-shadow:
-              0 0 2px #00ff00,
-              0 0 5px #00ff00,
-              0 0 10px #00ff00,
-              0 0 15px #00ff00;
-          }
-          100% {
-            box-shadow:
-              0 0 4px #00ff00,
-              0 0 10px #00ff00,
-              0 0 15px #00ff00,
-              0 0 20px #00ff00;
-          }
+        @keyframes glowGreen 
+        {
+            0% 
+            {
+                box-shadow:
+                0 0 2px #00ff00,
+                0 0 5px #00ff00,
+                0 0 10px #00ff00,
+                0 0 15px #00ff00;
+            }
+            100% 
+            {
+                box-shadow:
+                0 0 4px #00ff00,
+                0 0 10px #00ff00,
+                0 0 15px #00ff00,
+                0 0 20px #00ff00;
+            }
         }
 
-        /* Glow keyframes red - toned down */
-        @keyframes glowRed {
-          0% {
-            box-shadow:
-              0 0 2px #ff0000,
-              0 0 5px #ff0000,
-              0 0 10px #ff0000,
-              0 0 15px #ff0000;
-          }
-          100% {
-            box-shadow:
-              0 0 4px #ff0000,
-              0 0 10px #ff0000,
-              0 0 15px #ff0000,
-              0 0 20px #ff0000;
-          }
+        @keyframes glowRed 
+        {
+            0% 
+            {
+                box-shadow:
+                0 0 2px #ff0000,
+                0 0 5px #ff0000,
+                0 0 10px #ff0000,
+                0 0 15px #ff0000;
+            }
+            100% 
+            {
+                box-shadow:
+                0 0 4px #ff0000,
+                0 0 10px #ff0000,
+                0 0 15px #ff0000,
+                0 0 20px #ff0000;
+            }
         }
 
         html,
@@ -200,7 +206,7 @@
             z-index: 0;
             overflow: visible;
         }
-        /* Slim neon racing border */
+        
         .center-card::before {
           content: "";
           position: absolute;
@@ -209,7 +215,7 @@
           right: 0;
           bottom: 0;
           border-radius: 18px;
-          padding: 2px; /* thickness of the neon line */
+          padding: 2px;
           background: linear-gradient(
             270deg,
             #ffb200,
@@ -256,7 +262,6 @@
             animation: pulseGlow 1.5s infinite;
         }
 
-        /* Add Student button glowing animation - softer */
         .btn-add:hover,
         .btn-add:focus {
           animation: glowGreen 2s infinite alternate;
@@ -269,7 +274,6 @@
             0 0 20px #00ff00;
         }
 
-        /* Remove Student button glowing animation - softer */
         .btn-remove:hover,
         .btn-remove:focus {
           animation: glowRed 2s infinite alternate;
