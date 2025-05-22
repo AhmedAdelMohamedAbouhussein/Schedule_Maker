@@ -1,15 +1,12 @@
 <?php
-
-session_start(); // Required to use $_SESSION
+session_start();
 include '../Connect_DataBase.php';
 
-// Ensure the content type is set *before* any output
 header('Content-Type: application/json');
-
 
 $studentID = $_SESSION['ID']; 
 
-// Step 1: Get the student's department
+// Get the student's department
 $sql = "SELECT Department_Name FROM Department WHERE Department_ID = (SELECT Department_ID FROM Student WHERE Student_ID = ?)";
 $stmt = $conn->prepare($sql);
 if (!$stmt) 
@@ -34,7 +31,7 @@ if (!$departmentRow)
 $department = $departmentRow['Department_Name'];
 $stmt->close();
 
-// Step 2: Get all completed courses
+// Get all completed courses
 $sql = "SELECT Course_Code FROM CompletedCourses WHERE Student_ID = ?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) 
@@ -61,7 +58,6 @@ $stmt->close();
 $recommendedCourses = [];
 if (!empty($completedCourses)) 
 {
-    // Build placeholders for IN and NOT IN clauses
     $placeholdersIn = implode(',', array_fill(0, count($completedCourses), '?'));
     $placeholdersNotIn = implode(',', array_fill(0, count($completedCourses), '?'));
 

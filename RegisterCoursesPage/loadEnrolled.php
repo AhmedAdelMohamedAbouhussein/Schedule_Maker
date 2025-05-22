@@ -57,8 +57,8 @@ if (!$result) {
     exit();
 }
 
-while ($row = $result->fetch_assoc()) {
-    // Add to lecture details
+while ($row = $result->fetch_assoc()) 
+{
     $lectureDetails[] = [
         'Course_Code'    => $row['Course_Code'],
         'Day_of_Week'    => $row['Lecture_Day_of_Week'],
@@ -70,7 +70,6 @@ while ($row = $result->fetch_assoc()) {
         'Room'           => $row['Lecture_Room']
     ];
 
-    // Add to section details
     $sectionDetails[] = [
         'Course_Code'    => $row['Course_Code'],
         'Day_of_Week'    => $row['Section_Day_of_Week'],
@@ -84,54 +83,10 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
-// =================== Second Query: Get Enrolled Lecture & Section Time IDs ===================
-
-$lectureTimeIDs = [];
-$sectionTimeIDs = [];
-
-$sql2 = "SELECT LectureTime_ID, SectionTime_ID FROM Enrollment WHERE Student_ID = ?";
-$stmt2 = $conn->prepare($sql2);
-
-if (!$stmt2) {
-    echo json_encode(['error' => 'Prepare statement failed (ID query)']);
-    exit();
-}
-
-$stmt2->bind_param("i", $studentID);
-$stmt2->execute();
-$result2 = $stmt2->get_result();
-
-if (!$result2) {
-    echo json_encode(['error' => 'Get result failed (ID query)']);
-    exit();
-}
-
-while ($row = $result2->fetch_assoc()) {
-    $lectureTimeIDs[] = $row['LectureTime_ID'];
-    $sectionTimeIDs[] = $row['SectionTime_ID'];
-}
-
-// =================== Filter Results ===================
-
-// Remove any lecture not in enrolled LectureTime_IDs
-$lectureDetails = array_filter($lectureDetails, function($lecture) use ($lectureTimeIDs) {
-    return in_array($lecture['LectureTime_ID'], $lectureTimeIDs);
-});
-
-// Remove any section not in enrolled SectionTime_IDs
-$sectionDetails = array_filter($sectionDetails, function($section) use ($sectionTimeIDs) {
-    return in_array($section['SectionTime_ID'], $sectionTimeIDs);
-});
-
-// Optional: Reindex arrays to avoid broken indices
-$lectureDetails = array_values($lectureDetails);
-$sectionDetails = array_values($sectionDetails);
-
-// =================== Output ===================
-
 echo json_encode([
     'lectures' => $lectureDetails,
     'sections' => $sectionDetails
 ]);
+
 $conn->close();
 ?>

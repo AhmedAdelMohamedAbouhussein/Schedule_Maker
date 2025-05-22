@@ -70,7 +70,8 @@ getCourses2();
 
 
 
-function LoadSubjectToSchedule(lectures, sections) {
+function LoadSubjectToSchedule(lectures, sections) 
+{
     lectures.forEach(lecture => {
         const subject = lecture.Course_Code;
         const time = `${lecture.Day_of_Week} - ${lecture.Start_Time} - ${lecture.End_Time}`;

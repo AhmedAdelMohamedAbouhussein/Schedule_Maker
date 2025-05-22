@@ -129,11 +129,12 @@ function validateAddForm()
         return false;
     }
 
-    if (!/^[a-zA-Z]+$/.test(name)) 
+    if (!/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/.test(name)) 
     {
-        responseDiv.innerHTML = "Name must contain only letters (a–z or A–Z).";
+        responseDiv.innerHTML = "Name must contain only letters and spaces (no leading or trailing spaces).";
         return false;
     }
+
 
     return true;
 }
